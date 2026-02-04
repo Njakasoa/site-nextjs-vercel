@@ -21,7 +21,7 @@ export function constructMetadata({
   return {
     title: `${title} | ${siteConfig.name}`,
     description,
-    keywords: siteConfig.keywords,
+    keywords: [...siteConfig.keywords],
     authors: [{ name: siteConfig.author }],
     creator: siteConfig.name,
     publisher: siteConfig.name,
