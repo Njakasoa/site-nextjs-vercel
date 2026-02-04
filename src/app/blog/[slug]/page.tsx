@@ -8,6 +8,8 @@ import { constructMetadata } from '@/lib/seo/metadata';
 import { formatDate } from '@/lib/utils';
 import { generateBlogPostingJsonLd } from '@/lib/seo/jsonld';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return getAllBlogSlugs().map((slug) => ({ slug }));
 }
@@ -15,9 +17,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = getBlogPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = getBlogPostBySlug(slug);
   if (!post) {
     return constructMetadata({
       title: 'Article non trouvé',
@@ -33,12 +36,13 @@ export async function generateMetadata({
   });
 }
 
-export default function BlogPostPage({
+export default async function BlogPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = getBlogPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = getBlogPostBySlug(slug);
 
   if (!post) {
     notFound();

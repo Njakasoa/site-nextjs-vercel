@@ -12,6 +12,8 @@ import { getServiceBySlug, getAllServiceSlugs } from '@/content/services';
 import { constructMetadata } from '@/lib/seo/metadata';
 import { generateServiceJsonLd } from '@/lib/seo/jsonld';
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   return getAllServiceSlugs().map((slug) => ({ slug }));
 }
@@ -19,9 +21,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const service = getServiceBySlug(params.slug);
+  const { slug } = await params;
+  const service = getServiceBySlug(slug);
   if (!service) {
     return constructMetadata({
       title: 'Service non trouvé',
@@ -36,12 +39,13 @@ export async function generateMetadata({
   });
 }
 
-export default function ServicePage({
+export default async function ServicePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const service = getServiceBySlug(params.slug);
+  const { slug } = await params;
+  const service = getServiceBySlug(slug);
 
   if (!service) {
     notFound();

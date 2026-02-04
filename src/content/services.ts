@@ -247,8 +247,13 @@ export const services: Service[] = [
   },
 ] as const;
 
+function normalizeSlug(slug: string): string {
+  return decodeURIComponent(slug).trim().toLowerCase();
+}
+
 export function getServiceBySlug(slug: string): Service | undefined {
-  return services.find((s) => s.slug === slug);
+  const target = normalizeSlug(slug);
+  return services.find((s) => normalizeSlug(s.slug) === target);
 }
 
 export function getAllServiceSlugs(): string[] {

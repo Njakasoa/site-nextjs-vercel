@@ -169,8 +169,13 @@ export const blogPosts: BlogPost[] = [
   },
 ] as const;
 
+function normalizeSlug(slug: string): string {
+  return decodeURIComponent(slug).trim().toLowerCase();
+}
+
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {
-  return blogPosts.find((p) => p.slug === slug);
+  const target = normalizeSlug(slug);
+  return blogPosts.find((p) => normalizeSlug(p.slug) === target);
 }
 
 export function getAllBlogSlugs(): string[] {
